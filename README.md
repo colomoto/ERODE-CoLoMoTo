@@ -1,3 +1,17 @@
 # ERODE-CoLoMoTo
 
-Please download the code and open the jupyter lab notebook contained in the folder `distr`
+Python interface to ERODE for Backward Boolean Equivalence reduction of synchronous Boolean networks.
+
+## Installation
+
+### Pip
+
+```
+pip install erode-python
+```
+
+### Conda
+
+```
+conda install -c conda-forge -c colomoto erode-python
+```
