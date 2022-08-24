@@ -1,0 +1,31 @@
+{% set name = "erode-python" %}
+{% set version = "9999" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  path: ../
+
+build:
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  build:
+    - python {{ python }}
+    - pip
+    - setuptools
+  run:
+    - python
+    - colomoto_jupyter >=0.8.0
+    - openjdk
+    - py4j
+
+test:
+    imports:
+        - erode
+
+about:
+  home: https://github.com/pauleve/mpbn
+  summary: 'ERODE with Python interface'
