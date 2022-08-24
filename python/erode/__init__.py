@@ -50,6 +50,10 @@ def _stop_server(proc):
         proc.wait()
 
 class ErodePartition(dict):
+    """
+    Dict-like representation of an ERODE parition.
+    Maps each species to a block identifier.
+    """
     def __init__(self, instance, values):
         self._instance = instance
         super().__init__(zip(self._instance.species, values))
@@ -60,6 +64,9 @@ class ErodePartition(dict):
         super().__setitem__(k,v)
 
     def for_erode(self):
+        """
+        Converts to a Java Array for ERODE Java API
+        """
         a = [self[k] for k in self._instance.species]
         return self._instance.make_jarray(a)
 
@@ -68,6 +75,10 @@ class ErodePartition(dict):
 
 
 class ErodeInstance(object):
+    """
+    Interface to ERODE.
+    The internal Java API is available with the `japi` property.
+    """
     def __init__(self, model, usermode="INPUTS"):
         """
         Creates an ERODE instance for computing model reduction.
@@ -90,6 +101,9 @@ class ErodeInstance(object):
         self.load_model(model, usermode)
 
     def make_jarray(self, seq):
+        """
+        Returns a java Array[int] of the given `seq` collection.
+        """
         jarray = self._gw.new_array(self._gw.jvm.int, len(seq))
         for i, v in enumerate(seq):
             jarray[i] = v
@@ -146,6 +160,7 @@ class ErodeInstance(object):
 
         Returns the computed partition as a :py:class:`.ErodePartition` object.
 
+        :param dict[str,int] partition: dictionnary assigning species to block id
         :param bool apply: if True, update the current partition
         """
         if partition is not None:
@@ -157,6 +172,17 @@ class ErodeInstance(object):
         return bbe_p
 
     def reduce_model(self, partition=None, output_bnet=None, ret="auto"):
+        """
+        Reduce the model according the the given parition, or the current
+        parition (`.partition` property) if none is provided.
+
+        :param dict[str,int] partition: dictionnary assigning species to block id
+        :param str output_bnet: Filename for BoolNet export of the reduced model
+        :param ret: if `"auto"` (default), the methods returns
+            :py:class:`colomoto.minibn.BooleanNetwork` object of the reduced
+            model unless `output_bnet` is specified. Otherwise the object is
+            returned if `True`.
+        """
         partition = partition if partition is not None else self.partition
         self.japi.computeBBEReducedModel(partition.for_erode())
         self.reload()
@@ -178,9 +204,33 @@ class ErodeInstance(object):
 
 
 def load(*args, **kwargs):
+    """
+    See :py:class:`.ErodeInstance`
+    """
     return ErodeInstance(*args, **kwargs)
 
 def bbe_reduction(model, output_bnet=None, usermode=None, initial_partition=None):
+    """
+    Computes the Backward Boolean Equivalence reduction of the given Boolean networks
+    specified by `model`.
+
+    Returns a :py:class:`colomoto.minibn.BooleanNetwork` object of the reduced
+    model, unless `output_bnet` is supplied. In this case, the reduced model is
+    written to the filename `output_bnet`, and nothing is returned.
+
+    :param model: Boolean network model
+    :type model: filename in BoolNet format (`".bnet"`) or object of type
+        :py:class:`colomoto.minibn.BooleanNetwork` or any type accepted by
+        :py:class:`colomoto.minibn.BooleanNetwork` constructor
+    :param str output_bnet: Filename for BoolNet export of the reduced model
+    :param str usermode: predefined initial partition
+        - `"INPUTS"`: every input  variable is isolated in a singleton block (plus one block for the other variables)
+        - `"OUTPUTS"`: every output variable is isolated in a singleton block (plus one block for the other variables)
+        - `"INPUTSONEBLOCK"`:all input  variables are in the same block (plus one block for the other variables)
+        - `"OUTPUTSONEBLOCK"`: all output variables are in the same block (plus one block for the other variables)
+    :param dict[str,int] initial_partition: initial partition of the species.
+       The dictionnary must map each species of the model to a block identifier.
+    """
     ei_opts = {"usermode": usermode} if usermode else {}
     e = ErodeInstance(model, **ei_opts)
     if usermode:
