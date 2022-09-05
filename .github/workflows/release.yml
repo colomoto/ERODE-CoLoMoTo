@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sed -i "s:9999:${VERSION//*v/}:" setup.cfg conda/meta.yaml
+    - run: sed -i "s:9999:${VERSION//*v/}:" setup.* conda/meta.yaml
       env:
           VERSION: ${{ github.ref }}
     - uses: actions/setup-python@v1
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sed -i "s:9999:${VERSION//*v/}:" setup.cfg conda/meta.yaml
+    - run: sed -i "s:9999:${VERSION//*v/}:" setup.* conda/meta.yaml
       env:
           VERSION: ${{ github.ref }}
     - uses: s-weigand/setup-conda@v1

@@ -8,7 +8,14 @@ from setuptools import setup
 
 import logging
 
-JAR_URL = "https://github.com/colomoto/ERODE-CoLoMoTo/raw/main/it.sssa.erode.colomoto/distr/erode4Colomoto.jar"
+VERSION = "9999"
+
+if not VERSION.replace("9",""):
+    branch = "main"
+else:
+    branch = f"v{VERSION}"
+
+JAR_URL = f"https://github.com/colomoto/ERODE-CoLoMoTo/raw/{branch}/it.sssa.erode.colomoto/distr/erode4Colomoto.jar"
 
 PLATFORM_DEPS = {
     "Darwin": "https://github.com/IMTAltiStudiLucca/ERODE-Libraries/raw/master/z3SourceLibraries/mac.zip",
@@ -45,7 +52,7 @@ class build_erode_lib(setuptools.command.build_py.build_py):
             os.unlink(dep_zip)
         super().run()
 
-setup(
+setup(version =VERSION,
     cmdclass={
         'build_py': build_erode_lib,
     }
