@@ -292,7 +292,7 @@ public class EntryPointBNColomoto {
 			erode.computeReducedModel(updateCRN, reduction, out, bwOut, 
 					reducedFileName, printModels, aggr, obtainedPartition, 
 					icWarning, reductionName, reducedModelName, smtFBE, 
-					smtBBE, writeReducedCRN, infoReduction);
+					smtBBE, null,writeReducedCRN, infoReduction);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
