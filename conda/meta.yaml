@@ -10,10 +10,11 @@ source:
 
 build:
   script: python -m pip install --no-deps --ignore-installed .
+  noarch: python
 
 requirements:
   build:
-    - python {{ python }}
+    - python
     - pip
     - setuptools
   run:
@@ -27,5 +28,5 @@ test:
         - erode
 
 about:
-  home: https://github.com/pauleve/mpbn
+  home: https://github.com/colomoto/ERODE-CoLoMoTo
   summary: 'ERODE with Python interface'

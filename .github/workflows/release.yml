@@ -7,17 +7,12 @@ on:
 jobs:
   pypi-publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9, '3.10', 3.11]
     steps:
     - uses: actions/checkout@v3
     - run: sed -i "s:9999:${VERSION//*v/}:" setup.* conda/meta.yaml
       env:
           VERSION: ${{ github.ref }}
     - uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -31,18 +26,12 @@ jobs:
         twine upload dist/*
   conda-publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9, '3.10', 3.11]
     steps:
     - uses: actions/checkout@v3
     - run: sed -i "s:9999:${VERSION//*v/}:" setup.* conda/meta.yaml
       env:
           VERSION: ${{ github.ref }}
     - uses: s-weigand/setup-conda@v1
-      with:
-        update-conda: true
-        python-version: ${{ matrix.python-version }}
     - name: prepare
       run: |
         conda install -y anaconda-client conda-build conda-verify
